@@ -5,21 +5,21 @@ import Link from 'next/link';
 
 export default function NavBar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#050505]/75 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-black/50 backdrop-blur-md">
       {/* Left: Brand */}
       <div className="flex items-center">
-        <span className="text-xl font-bold tracking-tight text-white">
-          DEV_PORTFOLIO
+        <span className="text-lg font-semibold tracking-tight text-f5f5f7">
+          ACME
         </span>
       </div>
 
       {/* Center: Navigation Links */}
-      <div className="hidden md:flex items-center gap-8">
+      <div className="hidden md:flex items-center gap-6">
         {['Overview', 'Projects', 'Stack', 'Process'].map((item) => (
           <Link
             key={item}
             href={`#${item.toLowerCase()}`}
-            className="text-sm font-medium text-white/60 hover:text-white transition-colors"
+            className="text-xs font-medium text-f5f5f7/80 hover:text-f5f5f7 transition-colors"
           >
             {item}
           </Link>
@@ -30,9 +30,9 @@ export default function NavBar() {
       <div className="flex items-center">
         <Link
           href="#contact"
-          className="px-5 py-2 text-sm font-semibold text-white transition-all rounded-full bg-gradient-to-r from-[#00D6FF] to-[#0050FF] hover:opacity-90 hover:shadow-[0_0_20px_rgba(0,214,255,0.3)]"
+          className="px-4 py-1.5 text-xs font-semibold text-black transition-all rounded-full bg-accent hover:opacity-90"
         >
-          Let’s Talk
+          Contact
         </Link>
       </div>
     </nav>

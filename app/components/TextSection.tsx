@@ -17,10 +17,10 @@ export default function TextSection({ headline, subheadline, style, className = 
             className={`absolute inset-0 flex flex-col items-start justify-center px-8 md:px-24 pointer-events-none ${className}`}
         >
             <div className="max-w-4xl space-y-4">
-                <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white drop-shadow-2xl">
+                <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-[#f5f5f7] drop-shadow-lg">
                     {headline}
                 </h2>
-                <p className="text-xl md:text-2xl font-light text-white/70 max-w-2xl leading-relaxed">
+                <p className="text-lg md:text-xl text-[#f5f5f7]/70 max-w-2xl leading-relaxed">
                     {subheadline}
                 </p>
             </div>
