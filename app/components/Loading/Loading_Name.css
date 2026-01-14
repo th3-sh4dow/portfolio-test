@@ -1,0 +1,145 @@
+/* Root */
+.main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(
+    circle at top,
+    #0b1020 0%,
+    #020617 60%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* Brand Section */
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 64px;
+  position: relative;
+}
+
+/* Anchor Box – Metallic Indigo Steel */
+.anchor-box {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(
+    135deg,
+    #4f46e5 0%,
+    #3730a3 60%,
+    #1e1b4b 100%
+  );
+  border-radius: 20px;
+  box-shadow:
+    0 0 40px rgba(79, 70, 229, 0.25),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(129, 140, 248, 0.18);
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+/* Icon – Soft Chrome */
+.icon {
+  width: 40px;
+  height: 40px;
+  color: #e5e7eb;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+}
+
+/* Text Mask */
+.text-mask {
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+/* Brand Text – Real Metallic Look */
+.brand-text {
+  max-width: 56rem;
+  background: linear-gradient(
+    135deg,
+    #f9fafb 0%,
+    #c7cbd6 30%,
+    #9ca3af 50%,
+    #e5e7eb 70%,
+    #f9fafb 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  padding: 20px 20px;
+  line-height: 1;
+  text-shadow:
+    0 1px 1px rgba(255,255,255,0.08),
+    0 -1px 2px rgba(0,0,0,0.6);
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: center;
+}
+
+/* Button – Muted Platinum */
+.replay-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  background: linear-gradient(
+    180deg,
+    #f9fafb 0%,
+    #d1d5db 100%
+  );
+  color: #020617;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255,255,255,0.6);
+}
+
+.replay-btn:hover {
+  transform: scale(1.05);
+}
+
+.replay-btn:active {
+  transform: scale(0.95);
+}
+
+/* Refresh Icon */
+.refresh-icon {
+  width: 20px;
+  height: 20px;
+  color: #3730a3;
+  transition: transform 0.5s ease;
+}
+
+.replay-btn:hover .refresh-icon {
+  transform: rotate(180deg);
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+  .brand-text {
+    font-size: 6rem;
+  }
+}
