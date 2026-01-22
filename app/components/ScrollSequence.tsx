@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 
-const FRAME_COUNT = 1648;
+const FRAME_COUNT = 1999;
 const AUTO_PLAY_END = 187; // Frames 0-187 will auto-play
 const SCROLL_START = 188; // Scrolling starts from frame 188
 
@@ -24,8 +24,8 @@ export default function ScrollSequence() {
 
     // Map scroll to frames 188-1647 (after auto-play)
     const frameIndexMotion = useTransform(
-        smoothProgress, 
-        [0, 1], 
+        smoothProgress,
+        [0, 1],
         [SCROLL_START, FRAME_COUNT - 1]
     );
 
@@ -36,7 +36,7 @@ export default function ScrollSequence() {
 
     // Load frame map
     useEffect(() => {
-        fetch('/frame-map.json')
+        fetch(`/frame-map.json?v=${Date.now()}`)
             .then(res => res.json())
             .then(data => {
                 const filenames = data.map((item: any) => item.filename);
@@ -93,11 +93,11 @@ export default function ScrollSequence() {
 
         const loadImage = (index: number) => {
             if (imagesRef.current.has(index)) return Promise.resolve();
-            
+
             return new Promise<void>((resolve) => {
                 const img = new Image();
                 img.src = getImagePath(index);
-                
+
                 img.onload = () => {
                     if (!isMounted) return;
                     imagesRef.current.set(index, img);
@@ -108,7 +108,7 @@ export default function ScrollSequence() {
                     });
                     resolve();
                 };
-                
+
                 img.onerror = () => {
                     console.warn(`Failed to load frame ${index}`);
                     resolve();
@@ -141,7 +141,7 @@ export default function ScrollSequence() {
     // Update current frame on scroll (only after auto-play)
     useMotionValueEvent(frameIndexMotion, 'change', (latest) => {
         if (isAutoPlaying) return; // Don't update during auto-play
-        
+
         const floorIndex = Math.floor(latest);
         if (floorIndex !== currentFrame) {
             setCurrentFrame(floorIndex);
@@ -172,7 +172,7 @@ export default function ScrollSequence() {
         if (img && img.complete) {
             const canvasWidth = window.innerWidth;
             const canvasHeight = window.innerHeight;
-            
+
             const hRatio = canvasWidth / img.width;
             const vRatio = canvasHeight / img.height;
             const ratio = Math.max(hRatio, vRatio);
@@ -200,7 +200,7 @@ export default function ScrollSequence() {
                 ref={canvasRef}
                 className="block w-full h-full object-cover"
             />
-            
+
             {/* Loading indicator */}
             {loadingProgress < 100 && loadingProgress > 0 && (
                 <div className="fixed bottom-8 right-8 z-50 glass-dark px-6 py-3 rounded-full shadow-2xl">

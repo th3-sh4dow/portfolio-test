@@ -1,291 +1,206 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import LoadingScreen from './components/Loading/LoadingScreen';
+import HeroCanvas from './components/HeroCanvas';
 import NavBar from './components/NavBar';
-import ScrollSequence from './components/ScrollSequence';
-import TextSection from './components/TextSection';
-import HeroSection from './components/HeroSection';
-import FeatureCard from './components/FeatureCard';
-import ProjectCard from './components/ProjectCard';
-import IntroSequence from './components/IntroSequence';
-import { motion, AnimatePresence } from 'framer-motion';
+import AboutSection from './components/sections/AboutSection';
+import SkillsSection from './components/sections/SkillsSection';
+import ProjectsSection from './components/sections/ProjectsSection';
+import ExperienceSection from './components/sections/ExperienceSection';
+import ContactSection from './components/sections/ContactSection';
 
 export default function Home() {
-  const [introComplete, setIntroComplete] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadingProgress, setLoadingProgress] = useState(0);
+    const [showNavbar, setShowNavbar] = useState(false);
+    const [introComplete, setIntroComplete] = useState(false);
+    const heroRef = useRef<HTMLElement>(null);
 
-  const features = [
-    {
-      icon: (
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-full h-full">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
-      title: "Responsive Design",
-      description: "Pixel-perfect interfaces that adapt seamlessly across all devices and screen sizes."
-    },
-    {
-      icon: (
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-full h-full">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-      title: "Performance First",
-      description: "Optimized code and architecture ensuring lightning-fast load times and smooth interactions."
-    },
-    {
-      icon: (
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-full h-full">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
-        </svg>
-      ),
-      title: "Modern Stack",
-      description: "Built with cutting-edge technologies like Next.js, TypeScript, and advanced animation libraries."
-    }
-  ];
+    // Simulate loading progress
+    useEffect(() => {
+        if (!isLoading) return;
 
-  const projects = [
-    {
-      title: "E-Commerce Platform",
-      description: "A premium shopping experience with advanced filtering, real-time inventory, and seamless checkout flow.",
-      image: "/hero-intro/0100_4.jpeg",
-      tags: ["Next.js", "TypeScript", "Stripe", "Framer Motion"],
-      link: "#"
-    },
-    {
-      title: "SaaS Dashboard",
-      description: "Comprehensive analytics dashboard with real-time data visualization and interactive charts.",
-      image: "/hero-intro/0200_4.jpeg",
-      tags: ["React", "D3.js", "Node.js", "PostgreSQL"],
-      link: "#"
-    },
-    {
-      title: "Mobile App",
-      description: "Cross-platform mobile application with native performance and intuitive user experience.",
-      image: "/hero-intro/0300_4.jpeg",
-      tags: ["React Native", "Expo", "Firebase", "Redux"],
-      link: "#"
-    }
-  ];
+        const progressInterval = setInterval(() => {
+            setLoadingProgress((prev) => {
+                if (prev >= 100) {
+                    clearInterval(progressInterval);
+                    return 100;
+                }
+                // Faster initial progress, slower towards end
+                const increment = prev < 70 ? 3 : prev < 90 ? 1 : 0.5;
+                return Math.min(prev + increment, 100);
+            });
+        }, 50);
 
-  return (
-    <>
-      {/* Intro Sequence: Loader + Auto-play */}
-      <IntroSequence onComplete={() => setIntroComplete(true)}>
-        {/* Background animation always visible after loader */}
-        <ScrollSequence />
-      </IntroSequence>
+        return () => clearInterval(progressInterval);
+    }, [isLoading]);
 
-      {/* Main Content - Shows after intro complete */}
-      <AnimatePresence>
-        {introComplete && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
-            <main className="relative w-full bg-transparent min-h-screen selection:bg-blue-500/30 selection:text-white">
-              <NavBar />
-              
-              {/* Hero Section */}
-              <div className="relative">
-                <HeroSection />
-              </div>
+    // Handle loading complete
+    const handleLoadingComplete = () => {
+        document.body.classList.remove('loading-active');
+        setIsLoading(false);
+    };
 
-            {/* Scrollable Content Container */}
-            <div className="relative w-full h-[800vh]">
-              {/* Section 1: Vision */}
-              <TextSection
-                headline="Crafting Digital Excellence."
-                subheadline="Where innovative design meets cutting-edge technology to create experiences that inspire and engage."
-                className="top-[40vh]"
-              />
+    // Handle intro animation complete
+    const handleIntroComplete = () => {
+        setIntroComplete(true);
+        setShowNavbar(true);
+    };
 
-              {/* Section 2: Approach */}
-              <TextSection
-                headline="Precision in Every Pixel."
-                subheadline="Meticulous attention to detail ensures every interaction feels natural, responsive, and delightfully smooth."
-                className="top-[250vh]"
-              />
+    // Lock scroll during loading
+    useEffect(() => {
+        if (isLoading) {
+            document.body.classList.add('loading-active');
+        } else {
+            document.body.classList.remove('loading-active');
+        }
 
-              {/* Section 3: Technology */}
-              <TextSection
-                headline="Built for Tomorrow."
-                subheadline="Leveraging the latest technologies and best practices to deliver scalable, maintainable solutions."
-                className="top-[500vh]"
-              />
+        return () => {
+            document.body.classList.remove('loading-active');
+        };
+    }, [isLoading]);
 
-              {/* Section 4: Call to Action */}
-              <div className="absolute top-[700vh] left-0 w-full flex flex-col items-center justify-center space-y-12 px-6 text-center">
-                <motion.h2 
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
-                  className="text-display text-4xl md:text-6xl lg:text-7xl font-bold text-white"
+    return (
+        <>
+            {/* Loading Screen */}
+            {isLoading && (
+                <LoadingScreen
+                    progress={loadingProgress}
+                    onComplete={handleLoadingComplete}
+                />
+            )}
+
+            {/* Main Content Container - Tall height for scrolling interactions */}
+            <main className="relative min-h-[700vh] w-full">
+
+                {/* Fixed Background Canvas */}
+                <HeroCanvas
+                    onVideoComplete={handleIntroComplete}
+                    isLoading={isLoading}
+                />
+
+                {/* Navigation - Slides in after intro */}
+                <NavBar isVisible={showNavbar} />
+
+                {/* SCROLLABLE SECTIONS */}
+                {/* Each section takes up a portion of the scroll timeline */}
+
+                {/* 1. Hero Content (0vh) */}
+                <section
+                    ref={heroRef}
+                    id="hero"
+                    className="absolute top-0 left-0 w-full h-screen flex items-center justify-center pointer-events-none"
                 >
-                  Ready to Create
-                  <br />
-                  <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                    Something Amazing?
-                  </span>
-                </motion.h2>
-                
-                <motion.div 
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  viewport={{ once: true }}
-                  className="flex flex-col sm:flex-row gap-6 justify-center"
-                >
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-primary px-8 py-4 text-lg font-semibold text-white rounded-full"
-                  >
-                    Start a Project
-                  </motion.button>
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn-secondary px-8 py-4 text-lg font-semibold text-white rounded-full"
-                  >
-                    View Portfolio
-                  </motion.button>
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Features Section */}
-            <section id="expertise" className="relative py-32 px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
-              <div className="max-w-7xl mx-auto">
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
-                  className="text-center mb-20"
-                >
-                  <h2 className="text-display text-4xl md:text-5xl font-bold text-white mb-6">
-                    Core Expertise
-                  </h2>
-                  <p className="text-body text-xl text-white/70 max-w-3xl mx-auto">
-                    Specialized skills and technologies that power exceptional digital experiences
-                  </p>
-                </motion.div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {features.map((feature, index) => (
-                    <FeatureCard
-                      key={index}
-                      icon={feature.icon}
-                      title={feature.title}
-                      description={feature.description}
-                      delay={index * 0.2}
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Projects Section */}
-            <section id="work" className="relative py-32 px-6 lg:px-8 bg-gray-900">
-              <div className="max-w-7xl mx-auto">
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
-                  className="text-center mb-20"
-                >
-                  <h2 className="text-display text-4xl md:text-5xl font-bold text-white mb-6">
-                    Featured Work
-                  </h2>
-                  <p className="text-body text-xl text-white/70 max-w-3xl mx-auto">
-                    A selection of recent projects showcasing innovation, creativity, and technical excellence
-                  </p>
-                </motion.div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {projects.map((project, index) => (
-                    <ProjectCard
-                      key={index}
-                      title={project.title}
-                      description={project.description}
-                      image={project.image}
-                      tags={project.tags}
-                      link={project.link}
-                      delay={index * 0.2}
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Contact Section */}
-            <section id="contact" className="relative py-32 px-6 lg:px-8 bg-black">
-              <div className="max-w-4xl mx-auto text-center">
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
-                  className="space-y-8"
-                >
-                  <h2 className="text-display text-4xl md:text-5xl font-bold text-white">
-                    Let's Build Something
-                    <br />
-                    <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                      Extraordinary
-                    </span>
-                  </h2>
-                  
-                  <p className="text-body text-xl text-white/70 max-w-2xl mx-auto">
-                    Ready to transform your ideas into reality? Let's discuss your next project and create something amazing together.
-                  </p>
-
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="pt-8"
-                  >
-                    <a
-                      href="mailto:hello@example.com"
-                      className="btn-primary inline-block px-12 py-4 text-lg font-semibold text-white rounded-full"
+                    {/* Hero Content - Appears after loading & intro */}
+                    <div
+                        className={`text-center z-10 px-6 transition-all duration-1000 ${!isLoading ? 'opacity-100' : 'opacity-0'
+                            }`}
                     >
-                      Get in Touch
-                    </a>
-                  </motion.div>
-                </motion.div>
-              </div>
-            </section>
+                        <div
+                            className={`transition-all duration-1000 delay-500 ${introComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                                }`}
+                        >
+                            <h1
+                                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6"
+                                style={{
+                                    background: 'linear-gradient(135deg, #ffffff 0%, var(--accent-primary) 50%, var(--accent-secondary) 100%)',
+                                    backgroundSize: '200% 200%',
+                                    WebkitBackgroundClip: 'text',
+                                    backgroundClip: 'text',
+                                    color: 'transparent',
+                                    animation: 'gradient-shift 4s ease infinite',
+                                    textShadow: '0 0 60px rgba(0, 217, 255, 0.3)',
+                                }}
+                            >
+                                BICKY MUDULI
+                            </h1>
 
-            {/* Footer */}
-            <footer className="relative py-12 px-6 border-t border-white/10 bg-black">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                  <div className="text-white/60 text-sm">
-                    © {new Date().getFullYear()} Bicky Muduli. Crafted with passion and precision.
-                  </div>
-                  <div className="flex space-x-6">
-                    {['GitHub', 'LinkedIn', 'Twitter'].map((social) => (
-                      <a
-                        key={social}
-                        href="#"
-                        className="text-white/60 hover:text-white transition-colors text-sm"
-                      >
-                        {social}
-                      </a>
-                    ))}
-                  </div>
+                            <p
+                                className="text-lg sm:text-xl md:text-2xl font-medium tracking-wide mb-4"
+                                style={{
+                                    color: 'var(--foreground-muted)',
+                                    textShadow: '0 0 20px rgba(0, 217, 255, 0.2)',
+                                }}
+                            >
+                                Full Stack Developer & Cybersecurity Specialist
+                            </p>
+
+                            <div
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-sm pointer-events-auto"
+                                style={{
+                                    background: 'var(--glass-bg)',
+                                    border: '1px solid var(--glass-border)',
+                                    backdropFilter: 'blur(10px)',
+                                }}
+                            >
+                                <span
+                                    className="w-2 h-2 rounded-full animate-pulse"
+                                    style={{ background: 'var(--accent-tertiary)' }}
+                                />
+                                <span style={{ color: 'var(--accent-tertiary)' }}>
+                                    Available for Work
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Scroll Indicator */}
+                        <div
+                            className={`absolute bottom-12 left-1/2 -translate-x-1/2 transition-all duration-1000 delay-1000 ${introComplete ? 'opacity-100' : 'opacity-0'
+                                }`}
+                        >
+                            <div className="flex flex-col items-center gap-3">
+                                <span
+                                    className="text-xs uppercase tracking-widest"
+                                    style={{ color: 'var(--foreground-subtle)' }}
+                                >
+                                    Scroll to Explore
+                                </span>
+                                <div
+                                    className="w-6 h-10 rounded-full flex items-start justify-center p-2"
+                                    style={{
+                                        border: '1px solid var(--glass-border)',
+                                    }}
+                                >
+                                    <div
+                                        className="w-1.5 h-3 rounded-full animate-bounce"
+                                        style={{ background: 'var(--accent-primary)' }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 2. About Section (120vh) */}
+                <div className="absolute top-[120vh] w-full">
+                    <AboutSection />
                 </div>
-              </div>
-            </footer>
+
+                {/* 3. Skills Section (240vh) */}
+                <div className="absolute top-[240vh] w-full">
+                    <SkillsSection />
+                </div>
+
+                {/* 4. Projects Section (360vh) */}
+                <div className="absolute top-[360vh] w-full">
+                    <ProjectsSection />
+                </div>
+
+                {/* 5. Experience Section (480vh) */}
+                <div className="absolute top-[480vh] w-full">
+                    <ExperienceSection />
+                </div>
+
+                {/* 6. Contact Section (600vh - End) */}
+                <div className="absolute top-[600vh] w-full">
+                    <ContactSection />
+                </div>
+
+                {/* Spacer at the very bottom to allow scrolling past the last element a bit */}
+                <div className="absolute top-[700vh] w-full h-[50vh]" />
+
             </main>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+        </>
+    );
 }
