@@ -19,7 +19,30 @@ export default function LoadingScreen({ onComplete, progress }: LoadingScreenPro
 
     const [displayText, setDisplayText] = useState('');
     const [isReady, setIsReady] = useState(false);
+    const [particles, setParticles] = useState<Array<{
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+        background: string;
+        animationDuration: number;
+        animationDelay: number;
+    }>>([]);
     const fullName = 'BICKY MUDULI';
+
+    // Generate particles data once on mount
+    useEffect(() => {
+        const particleData = Array.from({ length: 20 }, (_, i) => ({
+            width: Math.random() * 4 + 2,
+            height: Math.random() * 4 + 2,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            background: i % 2 === 0 ? 'var(--accent-primary)' : 'var(--accent-secondary)',
+            animationDuration: 3 + Math.random() * 2,
+            animationDelay: Math.random() * 2,
+        }));
+        setParticles(particleData);
+    }, []);
 
     // Glitch/Decoder text effect
     useEffect(() => {
@@ -159,18 +182,18 @@ export default function LoadingScreen({ onComplete, progress }: LoadingScreenPro
         >
             {/* Animated Background Particles */}
             <div ref={particlesRef} className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(20)].map((_, i) => (
+                {particles.map((particle, i) => (
                     <div
                         key={i}
                         className="absolute rounded-full"
                         style={{
-                            width: Math.random() * 4 + 2 + 'px',
-                            height: Math.random() * 4 + 2 + 'px',
-                            left: Math.random() * 100 + '%',
-                            top: Math.random() * 100 + '%',
-                            background: i % 2 === 0 ? 'var(--accent-primary)' : 'var(--accent-secondary)',
-                            animation: `float ${3 + Math.random() * 2}s ease-in-out infinite`,
-                            animationDelay: `${Math.random() * 2}s`,
+                            width: particle.width + 'px',
+                            height: particle.height + 'px',
+                            left: particle.left + '%',
+                            top: particle.top + '%',
+                            background: particle.background,
+                            animation: `float ${particle.animationDuration}s ease-in-out infinite`,
+                            animationDelay: `${particle.animationDelay}s`,
                         }}
                     />
                 ))}
